@@ -3,19 +3,17 @@ import { MetricsCard } from "@/components/MetricsCard";
 import { StrategyCard } from "@/components/StrategyCard";
 import { TradeHistory } from "@/components/TradeHistory";
 import { TrendingUp, DollarSign, Bot, Zap } from "lucide-react";
-import heroImage from "@/assets/stellar-hero.jpg";
+// O import da imagem de fundo foi removido, conforme discutimos
+import { TradingChart } from "@/components/TradingChart"; // Importe o componente do gráfico
 
 const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       <DashboardHeader />
       
-      {/* Hero Section */}
+      {/* Seção "Hero" sem a imagem de fundo */}
       <div 
         className="relative h-48 flex items-center justify-center bg-cover bg-center"
-        style={{
-          backgroundImage: `linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.4)), url(${heroImage})`
-        }}
       >
         <div className="text-center space-y-2">
           <h2 className="text-3xl font-bold text-white">Stellar Trading Dashboard</h2>
@@ -54,6 +52,12 @@ const Index = () => {
             trend="up"
             icon={<Zap className="h-4 w-4" />}
           />
+        </div>
+
+        {/* Gráfico de Trading: ONDE O NOVO CÓDIGO ESTÁ */}
+        <div className="bg-card rounded-lg p-6 shadow-md">
+            <h3 className="text-xl font-semibold mb-4 text-foreground">Performance do Mercado</h3>
+            <TradingChart />
         </div>
 
         {/* Strategies and Trading */}
