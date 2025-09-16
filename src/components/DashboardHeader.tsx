@@ -1,7 +1,8 @@
 import TropicLogo from "@/assets/home.png";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Wallet, Settings, Bell } from "lucide-react";
+import { Wallet, Settings, Bell, Home } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import {
   isConnected as freighterIsConnected,
@@ -12,6 +13,7 @@ import {
 } from "@stellar/freighter-api";
 
 export function DashboardHeader() {
+  const navigate = useNavigate();
   const [publicKey, setPublicKey] = useState<string | null>(null);
   const [connecting, setConnecting] = useState(false);
   const watcherRef = useRef<InstanceType<typeof WatchWalletChanges> | null>(null);
@@ -68,6 +70,8 @@ export function DashboardHeader() {
       if (typeof addr === 'string' && addr.length > 0) {
         setPublicKey(addr);
         localStorage.setItem("tropic_connected_pubkey", addr);
+        // redireciona para o dashboard pessoal
+        try { navigate('/portfolio'); } catch {}
       }
     } catch (e) {
       console.error("Wallet connect failed", e);
@@ -79,6 +83,10 @@ export function DashboardHeader() {
   function handleDisconnect() {
     setPublicKey(null);
     localStorage.removeItem("tropic_connected_pubkey");
+  }
+
+  function handleGoHome() {
+    navigate('/');
   }
   return (
     <header className="border-b border-border/50 bg-card/50 backdrop-blur-sm">
@@ -94,6 +102,15 @@ export function DashboardHeader() {
             </Badge>
           </div>
           <div className="flex items-center space-x-3">
+            <Button 
+              variant="ghost" 
+              size="sm" 
+              className="text-muted-foreground hover:text-foreground"
+              onClick={handleGoHome}
+              title="Voltar ao Dashboard"
+            >
+              <Home className="h-4 w-4" />
+            </Button>
             <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
               <Bell className="h-4 w-4" />
             </Button>

@@ -6,7 +6,11 @@ import { TradeHistory } from "@/components/TradeHistory";
 import { TrendingUp, DollarSign, Bot, Zap } from "lucide-react";
 const TradingChart = lazy(() => import("@/components/TradingChart").then(m => ({ default: m.TradingChart })));
 
-const BACKEND_URL = (import.meta as any).env?.VITE_BACKEND_URL as string | undefined;
+// Detectar se está sendo acessado externamente e usar IP da rede local
+const isExternal = !window.location.hostname.includes('localhost') && !window.location.hostname.includes('127.0.0.1');
+const BACKEND_URL = isExternal 
+  ? 'http://10.150.0.119:3000' // IP da sua rede local
+  : (import.meta as any).env?.VITE_BACKEND_URL || 'http://localhost:3000';
 
 type PriceRow = { symbol: string; price: number; volume: number; changePercent24h: number };
 
