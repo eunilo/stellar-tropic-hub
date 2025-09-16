@@ -1,8 +1,19 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { createChart, ColorType } from 'lightweight-charts';
-import { useResizeDetector } from 'react-resize-detector';
+import React from 'react';
+import { Line } from 'react-chartjs-2';
+import {
+  Chart as ChartJS,
+  LineElement,
+  PointElement,
+  LinearScale,
+  CategoryScale,
+  Tooltip,
+  Legend,
+  Filler,
+} from 'chart.js';
 
-// Dados de exemplo para o gráfico (pode ser substituído por dados reais da API)
+ChartJS.register(LineElement, PointElement, LinearScale, CategoryScale, Tooltip, Legend, Filler);
+
+// Dados de exemplo (substituíveis por dados reais)
 const exampleData = [
   { time: '2025-09-01', open: 100, high: 105, low: 98, close: 102 },
   { time: '2025-09-02', open: 102, high: 108, low: 100, close: 107 },
@@ -11,52 +22,53 @@ const exampleData = [
   { time: '2025-09-05', open: 109, high: 114, low: 107, close: 113 },
 ];
 
+const labels = exampleData.map((d) => d.time);
+const prices = exampleData.map((d) => d.close);
+
+const data = {
+  labels,
+  datasets: [
+    {
+      label: 'Preço (close)',
+      data: prices,
+      borderColor: 'rgba(99,102,241,1)',
+      backgroundColor: 'rgba(99,102,241,0.2)',
+      tension: 0.3,
+      fill: true,
+      pointRadius: 0,
+    },
+  ],
+};
+
+const options = {
+  responsive: true,
+  maintainAspectRatio: false,
+  scales: {
+    x: {
+      ticks: { color: '#a3a3a3' },
+      grid: { color: '#333' },
+    },
+    y: {
+      ticks: { color: '#a3a3a3' },
+      grid: { color: '#333' },
+    },
+  },
+  plugins: {
+    legend: {
+      labels: { color: '#d1d4dc' },
+    },
+    tooltip: {
+      intersect: false as const,
+      mode: 'index' as const,
+    },
+  },
+};
+
 export const TradingChart = () => {
-  const chartContainerRef = useRef<HTMLDivElement>(null);
-  const { width, height, ref } = useResizeDetector();
-  const [chart, setChart] = useState<any>(null);
-
-  useEffect(() => {
-    if (chartContainerRef.current) {
-      const chartInstance = createChart(chartContainerRef.current, {
-        width: chartContainerRef.current.clientWidth,
-        height: 300, // Altura padrão do gráfico
-        layout: {
-          background: { type: ColorType.Solid, color: '#131722' },
-          textColor: '#d1d4dc',
-        },
-        grid: {
-          vertLines: { color: '#333' },
-          horzLines: { color: '#333' },
-        },
-      });
-
-      const candlestickSeries = chartInstance.addCandlestickSeries({
-        upColor: '#26a69a',
-        downColor: '#ef5350',
-        borderDownColor: '#ef5350',
-        borderUpColor: '#26a69a',
-        wickDownColor: '#ef5350',
-        wickUpColor: '#26a69a',
-      });
-
-      candlestickSeries.setData(exampleData);
-      setChart(chartInstance);
-    }
-
-    return () => {
-      if (chart) {
-        chart.remove();
-      }
-    };
-  }, []);
-
-  useEffect(() => {
-    if (chart) {
-      chart.applyOptions({ width: width, height: height });
-    }
-  }, [width, height, chart]);
-
-  return <div ref={ref} style={{ height: '400px', width: '100%' }} />;
+  return (
+    <div style={{ height: '400px', width: '100%' }}>
+      <Line data={data as any} options={options as any} />
+    </div>
+  );
 };
 

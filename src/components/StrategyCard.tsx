@@ -5,11 +5,14 @@ import { Bot, Activity, Zap } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface StrategyCardProps {
+  id?: string;
   name: string;
   status: "active" | "paused" | "optimizing";
   performance: string;
   trades: number;
   type: "ai" | "defindex";
+  onPause?: (id?: string) => void;
+  onResume?: (id?: string) => void;
 }
 
 const statusConfig = {
@@ -30,7 +33,7 @@ const statusConfig = {
   }
 };
 
-export function StrategyCard({ name, status, performance, trades, type }: StrategyCardProps) {
+export function StrategyCard({ id, name, status, performance, trades, type, onPause, onResume }: StrategyCardProps) {
   const statusInfo = statusConfig[status];
   const StatusIcon = statusInfo.icon;
 
@@ -76,9 +79,15 @@ export function StrategyCard({ name, status, performance, trades, type }: Strate
           <Button variant="outline" size="sm" className="flex-1">
             View Details
           </Button>
-          <Button variant="secondary" size="sm" className="flex-1">
-            {status === "paused" ? "Resume" : "Pause"}
-          </Button>
+          {status === "paused" ? (
+            <Button variant="secondary" size="sm" className="flex-1" onClick={() => onResume?.(id)}>
+              Resume
+            </Button>
+          ) : (
+            <Button variant="secondary" size="sm" className="flex-1" onClick={() => onPause?.(id)}>
+              Pause
+            </Button>
+          )}
         </div>
       </CardContent>
     </Card>
